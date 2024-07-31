@@ -6,6 +6,8 @@ namespace RogueLights
 {
     public class MyMath
     {
+        public delegate Vector2 MovementFunction(GameTime gameTime, Vector2 position);
+
         public static Vector2 GetTextureAbsoluteCenter(Texture2D texture, Vector2 position)
         {
             return GetTextureAbsoluteCenter(texture.Width, texture.Height, position);

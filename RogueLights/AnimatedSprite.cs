@@ -19,7 +19,10 @@ namespace RogueLights
 
         TimeSpan LastFrameTime = TimeSpan.Zero;
 
-        public AnimatedSprite(Texture2D texture, int rows, int columns, float frameRate)
+        public bool IsOneShot;
+        public bool IsAsleep;
+
+        public AnimatedSprite(Texture2D texture, int rows, int columns, float frameRate, bool isAsleep = false, bool isOneShot = false)
         {
             Texture = texture;
             Rows = rows;
@@ -29,16 +32,23 @@ namespace RogueLights
             frameWidth = Texture.Width / Columns;
             frameHeight = Texture.Height / Rows;
             FrameRate = frameRate;
+            IsOneShot = isOneShot;
+            IsAsleep = isAsleep;
+        }
+
+        public void Teardown()
+        {
+            IsAsleep = true;
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            if (LastFrameTime.Ticks + TimeSpan.TicksPerSecond / FrameRate < gameTime.TotalGameTime.Ticks)
+            if (!IsAsleep && LastFrameTime.Ticks + TimeSpan.TicksPerSecond / FrameRate < gameTime.TotalGameTime.Ticks)
             {
                 currentFrame++;
 
-                if (currentFrame == totalFrames)
-                { 
+                if (!IsOneShot && currentFrame == totalFrames)
+                {
                     currentFrame = 0;
                 }
 
@@ -47,16 +57,19 @@ namespace RogueLights
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 location)
-        {            
-            int row = currentFrame / Columns;
-            int column = currentFrame % Columns;
+        {
+            if (currentFrame < totalFrames || !IsOneShot)
+            {
+                int row = currentFrame / Columns;
+                int column = currentFrame % Columns;
 
-            Rectangle sourceRectangle = new Rectangle(frameWidth * column, frameHeight * row, frameWidth, frameHeight);
-            Rectangle destinationRectangle = new Rectangle((int)location.X, (int)location.Y, frameWidth, frameHeight);
+                Rectangle sourceRectangle = new Rectangle(frameWidth * column, frameHeight * row, frameWidth, frameHeight);
+                Rectangle destinationRectangle = new Rectangle((int)location.X, (int)location.Y, frameWidth, frameHeight);
 
-            spriteBatch.Begin();
-            spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
-            spriteBatch.End();
+                spriteBatch.Begin();
+                spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
+                spriteBatch.End();
+            }
         }
     }
 }

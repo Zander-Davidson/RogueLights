@@ -5,15 +5,12 @@ using System;
 
 namespace RogueLights
 {
-    public class GameEntity : AnimatedSprite
+    public class GameEntity : GameEffect
     {
-        public Vector2 Position;
         public Rectangle HitBox;
-        public bool IsAsleep = false;
 
-        public GameEntity(Texture2D texture, int rows, int columns, float frameRate, Vector2 initialPosition, int hitBoxWidth, int hitBoxHeight) : base(texture, rows, columns, frameRate)
+        public GameEntity(Texture2D texture, int rows, int columns, float frameRate, Vector2 initialPosition, int hitBoxWidth, int hitBoxHeight) : base(texture, rows, columns, frameRate, initialPosition)
         {
-            Position = initialPosition;
             HitBox = new Rectangle((int)initialPosition.X, (int)initialPosition.Y, hitBoxWidth, hitBoxHeight);
         }
 
@@ -25,11 +22,6 @@ namespace RogueLights
             }
 
             return HitBox.Intersects(otherGameEntity.HitBox);
-        }
-
-        public void Teardown()
-        {
-            IsAsleep = true;
         }
 
         public delegate void UpdateHandler();
@@ -51,14 +43,6 @@ namespace RogueLights
                 handler();
 
                 base.Update(gameTime);
-            }
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            if (!IsAsleep)
-            {
-                base.Draw(spriteBatch, Position);
             }
         }
     }

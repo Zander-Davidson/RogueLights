@@ -20,8 +20,6 @@ namespace RogueLights
 
                 Position.X += unitVectorToPlayer.X * SpeedConstant * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 Position.Y += unitVectorToPlayer.Y * SpeedConstant * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                base.Update(gameTime);
             });
         }
     }

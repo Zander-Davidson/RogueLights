@@ -5,7 +5,6 @@ namespace RogueLights
 {
     public class Projectile : GameEntity
     {
-        Vector2 Velocity;
         int Width;
         int Height;
 
